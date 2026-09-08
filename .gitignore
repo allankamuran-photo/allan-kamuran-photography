@@ -36,3 +36,9 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# Local originals and generated caches
+/Images/
+/Music/
+__pycache__/
+*.tsbuildinfo

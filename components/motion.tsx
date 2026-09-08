@@ -64,17 +64,18 @@ export function Motion() {
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
-      if(event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if(event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const anchor = (event.target as Element).closest<HTMLAnchorElement>('a[href]');
       if(!anchor || anchor.target === '_blank' || anchor.hasAttribute('download') || anchor.classList.contains('skip-link')) return;
       const url = new URL(anchor.href);
       if(url.origin !== location.origin || !['http:','https:'].includes(url.protocol)) return;
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches){if(url.pathname!==location.pathname){event.preventDefault();router.push(url.pathname+url.search+url.hash);}return;}
       if(url.pathname === location.pathname && (!url.hash || url.hash === '#')) return;
       const target = url.hash ? document.getElementById(decodeURIComponent(url.hash.slice(1))) : null;
       if(url.pathname === location.pathname && !target) return;
       event.preventDefault();
       if(phaseRef.current !== 'idle') return;
-      setDestination(url.hash === '#about' ? 'About' : url.hash === '#work' ? 'Works' : ({'/':'Home','/work':'Works','/work/nature':'Nature','/work/street':'Street','/work/weddings':'Weddings','/work/people':'People','/prices':'Packages','/instagram':'Instagram','/contact':'Contact'}[url.pathname] || 'Portfolio'));
+      setDestination(url.hash === '#about' ? 'About' : url.hash === '#work' ? 'Works' : ({'/':'Home','/work':'Works','/work/travel':'Travel','/work/street':'Street','/work/weddings':'Weddings','/work/people':'People','/shop':'Shop','/prices':'Packages','/instagram':'Instagram','/contact':'Contact'}[url.pathname] || 'Portfolio'));
       setProgress(0);
       changePhase('cover');
       const start = performance.now();

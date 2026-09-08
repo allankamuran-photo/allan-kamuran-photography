@@ -5,7 +5,7 @@ import hashlib,json
 from PIL import Image,ImageOps
 
 ROOT=Path(__file__).resolve().parents[1]
-FOLDERS={'Nature':'nature','street photography':'street','weedings':'weddings','people':'people'}
+FOLDERS={'Travel':'travel','Street photography':'street','Weddings':'weddings','People':'people'}
 
 def capture_date(image):
     exif=image.getexif()
@@ -27,7 +27,7 @@ def import_photos(input_dir,output_dir):
                 date=capture_date(image)
             candidates.append((date,source))
         candidates.sort(key=lambda item:(item[0] or '',item[1].name),reverse=True)
-        for date,source in candidates[:20]:
+        for date,source in candidates:
             identity=hashlib.sha256(str(source.relative_to(input_dir)).encode()).hexdigest()[:16]
             output_dir.mkdir(parents=True,exist_ok=True)
             with Image.open(source) as original:
