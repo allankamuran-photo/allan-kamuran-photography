@@ -120,7 +120,7 @@ export function Motion() {
   return <>
     {intro&&<div className={`intro-screen ${phase==='intro-out'?'intro-screen-exit':''}`}>
       <div className="intro-signature">AK<span>✦</span></div>
-      <div className="intro-scene"><p>Always looking<br/>a little closer.</p><div className="intro-art"><img src="/photographer.png" alt="" fetchPriority="high"/><span className="scene-spark" aria-hidden="true">✦</span></div><p>Life, as<br/>it unfolds.</p></div>
+      <div className="intro-scene"><p>Always looking<br/>a little closer.</p><div className="intro-art"><div className="loading-monogram" aria-label="Allan Kamuran">AK<span aria-hidden="true">✦</span></div></div><p>Life, as<br/>it unfolds.</p></div>
       <div className="intro-status" aria-hidden="true">Loading… <span>{progress}%</span></div>
       <button className="skip-intro" onClick={()=>{if(finishTimer.current)clearTimeout(finishTimer.current);changePhase('idle');}}>Skip intro ↗</button>
     </div>}
