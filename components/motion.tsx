@@ -74,7 +74,7 @@ export function Motion() {
       if(url.pathname === location.pathname && !target) return;
       event.preventDefault();
       if(phaseRef.current !== 'idle') return;
-      setDestination(url.hash === '#about' ? 'About' : url.hash === '#work' ? 'Works' : ({'/':'Home','/prices':'Packages','/instagram':'Instagram','/contact':'Contact'}[url.pathname] || 'Portfolio'));
+      setDestination(url.hash === '#about' ? 'About' : url.hash === '#work' ? 'Works' : ({'/':'Home','/work':'Works','/work/nature':'Nature','/work/street':'Street','/work/weddings':'Weddings','/work/people':'People','/prices':'Packages','/instagram':'Instagram','/contact':'Contact'}[url.pathname] || 'Portfolio'));
       setProgress(0);
       changePhase('cover');
       const start = performance.now();
@@ -108,7 +108,7 @@ export function Motion() {
       cursor.current.style.transform=`translate3d(${event.clientX}px,${event.clientY}px,0)`;
       cursor.current.dataset.visible='true';
       const el=event.target as Element;
-      cursor.current.dataset.hover=el.closest('.photo-button,.hero-photo,.hero-illustration')?'photo':el.closest('a,button')?'link':'none';
+      cursor.current.dataset.hover=el.closest('.photo-button,.hero-photo,.hero-illustration,.work-tile')?'photo':el.closest('a,button')?'link':'none';
     };
     const leave=()=>{if(cursor.current)cursor.current.dataset.visible='false';};
     document.addEventListener('pointermove',move,{passive:true});document.addEventListener('pointerleave',leave);
