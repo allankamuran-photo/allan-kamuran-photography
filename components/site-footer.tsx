@@ -1,0 +1,1 @@
+export function SiteFooter(){return <footer><a href="/">ALLAN KAMURAN</a><nav aria-label="Footer navigation"><a href="/#about">About</a><a href="/contact">Contact</a><a href="/instagram">Instagram</a><a href="/prices">Prices</a></nav><a href="#">Back to top ↑</a></footer>}

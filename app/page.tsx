@@ -10,11 +10,10 @@ const photos = [
 ];
 export default function Home(){
  const [selected,setSelected]=useState<number|null>(null);
- return <><a className="skip-link" href="#work">Skip to photographs</a>
- <header className="site-header"><a className="wordmark" href="#">ALLAN KAMURAN<span>PHOTOGRAPHY</span></a><nav aria-label="Main navigation"><a href="#work">Selected work <span>↗</span></a><a href="#about">About</a></nav></header>
- <main><section className="intro"><div className="eyebrow"><span className="dot"/> WEDDINGS · STREET · NATURE · PEOPLE</div><div className="intro-row"><h1>Life, as <em>it unfolds.</em></h1><a className="explore" href="#work" aria-label="Explore selected photographs"><ArrowDown size={22}/></a></div><div className="intro-bottom"><p>Photographs by Allan Kamuran.</p><span>DESIGN PREVIEW · SAMPLE PHOTOGRAPHY</span></div></section>
+ return <>
+ <main id="main-content"><section className="intro"><div className="eyebrow"><span className="dot"/> WEDDINGS · STREET · NATURE · PEOPLE</div><div className="intro-row"><h1>Life, as <em>it unfolds.</em></h1><a className="explore" href="#work" aria-label="Explore selected photographs"><ArrowDown size={22}/></a></div><div className="intro-bottom"><p>Photographs by Allan Kamuran.</p><span>DESIGN PREVIEW · SAMPLE PHOTOGRAPHY</span></div></section>
  <section className="gallery" id="work" aria-label="Selected photographs">{photos.map((photo,i)=><figure className={'photo photo-'+i} key={photo.image}><button className="photo-button" onClick={()=>setSelected(i)} aria-label={'Enlarge '+photo.alt}><img src={photo.image} alt={photo.alt} loading={i===0?'eager':'lazy'}/><span className="photo-index">0{i+1} / {photo.category.toUpperCase()}</span><span className="photo-open"><Plus size={24}/></span></button><figcaption><div><span>{photo.category}</span><h2>{photo.title}</h2></div><ArrowUpRight size={22}/></figcaption></figure>)}</section>
  <section className="about" id="about"><div className="eyebrow">BEHIND THE CAMERA</div><div><h2>Allan Kamuran.</h2><p>Weddings, passing moments on the street, the natural world, and the people in it. My photography moves between them all.</p><p className="draft-note">Portfolio in progress. The photographs shown here are sample images, not work by Allan Kamuran.</p></div></section>
- </main><footer><a href="#">ALLAN KAMURAN</a><span>Photography</span><a href="#">Back to top ↑</a></footer>
+ </main>
  <Dialog open={selected!==null} onOpenChange={open=>{if(!open)setSelected(null)}}><DialogContent className="photo-dialog">{selected!==null&&<><DialogTitle>{photos[selected].title}</DialogTitle><img src={photos[selected].image} alt={photos[selected].alt}/><DialogDescription>Sample photograph by <a href={photos[selected].source} target="_blank" rel="noreferrer">{photos[selected].credit} / Unsplash</a>. Not work by Allan Kamuran.</DialogDescription></>}</DialogContent></Dialog></>
 }
