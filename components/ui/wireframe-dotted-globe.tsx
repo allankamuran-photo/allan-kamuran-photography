@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 interface RotatingEarthProps { width?: number; height?: number; className?: string }
@@ -8,28 +8,25 @@ interface RotatingEarthProps { width?: number; height?: number; className?: stri
 export default function RotatingEarth({ width = 800, height = 600, className = '' }: RotatingEarthProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pausedRef = useRef(false);
-  const [paused, setPaused] = useState(false);
-  const [status, setStatus] = useState('Loading globe…');
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     if (!canvas || !context) return;
     const controller = new AbortController();
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const updateMotion = () => { pausedRef.current = preference.matches; setPaused(preference.matches); };
+    const updateMotion = () => { pausedRef.current = preference.matches; };
     updateMotion();
     preference.addEventListener('change', updateMotion);
-    let size = 1, canvasHeight = 1, radius = 1, zoom = 1;
+    let size = 1, canvasHeight = 1, radius = 1;
     let land: d3.ExtendedFeatureCollection | null = null;
     const dots: [number, number][] = [];
     const rotation: [number, number] = [0, -15];
-    let dragging = false, previousX = 0, previousY = 0;
     const projection = d3.geoOrthographic().clipAngle(90);
     const path = d3.geoPath(projection, context);
     const graticule = d3.geoGraticule10();
     const render = () => {
       context.clearRect(0, 0, size, canvasHeight);
-      projection.rotate(rotation).scale(radius * zoom).translate([size / 2, canvasHeight / 2]);
+      projection.rotate(rotation).scale(radius).translate([size / 2, canvasHeight / 2]);
       context.beginPath(); path({ type: 'Sphere' });
       context.fillStyle = '#090909'; context.fill();
       context.strokeStyle = '#ddd'; context.lineWidth = 1; context.stroke();
@@ -42,7 +39,7 @@ export default function RotatingEarth({ width = 800, height = 600, className = '
           if (d3.geoDistance(dot, center) >= Math.PI / 2) continue;
           const point = projection(dot);
           if (!point) continue;
-          context.beginPath(); context.arc(point[0], point[1], Math.max(.6, radius / 180) * zoom, 0, Math.PI * 2); context.fill();
+          context.beginPath(); context.arc(point[0], point[1], Math.max(.6, radius / 180), 0, Math.PI * 2); context.fill();
         }
       }
     };
@@ -122,47 +119,18 @@ export default function RotatingEarth({ width = 800, height = 600, className = '
           if (data.features.some((feature: Parameters<typeof pointInFeature>[1]) => pointInFeature([lng, lat], feature))) dots.push([lng, lat]);
         }
       }
-      setStatus(''); render();
-    }).catch(() => { if (!controller.signal.aborted) setStatus('The globe map could not load. Please refresh to try again.'); });
+      render();
+    }).catch(() => { /* Keep the wireframe visible if the map is unavailable. */ });
     let previousTime = 0;
     const timer = d3.timer(elapsed => {
       const delta = Math.min(elapsed - previousTime, 50); previousTime = elapsed;
-      if (!pausedRef.current && !dragging && !document.hidden) { rotation[0] += delta * .006; render(); }
+      if (!pausedRef.current && !document.hidden) { rotation[0] += delta * .006; render(); }
     });
-    const down = (event: PointerEvent) => { dragging = true; previousX = event.clientX; previousY = event.clientY; canvas.setPointerCapture(event.pointerId); };
-    const move = (event: PointerEvent) => {
-      if (!dragging) return;
-      rotation[0] += (event.clientX - previousX) * .4;
-      rotation[1] = Math.max(-85, Math.min(85, rotation[1] - (event.clientY - previousY) * .4));
-      previousX = event.clientX; previousY = event.clientY; render();
-    };
-    const up = () => { dragging = false; };
-    const wheel = (event: WheelEvent) => { event.preventDefault(); zoom = Math.max(.6, Math.min(2.2, zoom * (event.deltaY > 0 ? .9 : 1.1))); render(); };
-    const key = (event: KeyboardEvent) => {
-      if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-'].includes(event.key)) return;
-      event.preventDefault();
-      if (event.key === 'ArrowLeft') rotation[0] -= 8;
-      if (event.key === 'ArrowRight') rotation[0] += 8;
-      if (event.key === 'ArrowUp') rotation[1] = Math.max(-85, rotation[1] - 8);
-      if (event.key === 'ArrowDown') rotation[1] = Math.min(85, rotation[1] + 8);
-      if (event.key === '+') zoom = Math.min(2.2, zoom * 1.1);
-      if (event.key === '-') zoom = Math.max(.6, zoom / 1.1);
-      render();
-    };
-    canvas.addEventListener('pointerdown', down); canvas.addEventListener('pointermove', move);
-    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
-    canvas.addEventListener('lostpointercapture', up); canvas.addEventListener('wheel', wheel, { passive: false });
-    canvas.addEventListener('keydown', key);
     return () => {
       controller.abort(); observer.disconnect(); timer.stop(); preference.removeEventListener('change', updateMotion);
-      canvas.removeEventListener('pointerdown', down); canvas.removeEventListener('pointermove', move);
-      canvas.removeEventListener('pointerup', up); canvas.removeEventListener('pointercancel', up);
-      canvas.removeEventListener('lostpointercapture', up); canvas.removeEventListener('wheel', wheel); canvas.removeEventListener('keydown', key);
     };
   }, [width, height]);
-  return <figure className={`dotted-globe ${className}`}>
-    <canvas ref={canvasRef} tabIndex={0} role="img" aria-label="Rotating dotted world globe. Drag or use arrow keys to rotate; scroll or use plus and minus to zoom." style={{ aspectRatio: `${width} / ${height}` }} />
-    {status && <p role="status">{status}</p>}
-    <figcaption><span>Drag to rotate · Scroll to zoom</span><button type="button" aria-pressed={paused} onClick={() => { pausedRef.current = !paused; setPaused(!paused); }}>{paused ? 'Resume rotation' : 'Pause rotation'}</button></figcaption>
-  </figure>;
+  return <div className={`dotted-globe ${className}`} aria-hidden="true">
+    <canvas ref={canvasRef} style={{ aspectRatio: `${width} / ${height}` }} />
+  </div>;
 }
