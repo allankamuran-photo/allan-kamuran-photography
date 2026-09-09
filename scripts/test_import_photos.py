@@ -15,6 +15,14 @@ class ImportPhotosTest(unittest.TestCase):
             self.assertEqual(len(list((root/'out').glob('*.webp'))),6)
             self.assertEqual(len(list(nature.glob('*.jpg'))),3)
             self.assertFalse(any(r['sample'] for r in records))
+    def test_new_lowercase_categories(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            for category in ('nature','cars'):
+                source=root/'Images'/category;source.mkdir(parents=True)
+                Image.new('RGB',(10,20)).save(source/'photo.jpg')
+            records=import_photos(root/'Images',root/'out')
+            self.assertEqual({r['category'] for r in records},{'nature','cars'})
     def test_imports_more_than_twenty(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);travel=root/'Images'/'Travel';travel.mkdir(parents=True)

@@ -5,7 +5,7 @@ import hashlib,json
 from PIL import Image,ImageOps
 
 ROOT=Path(__file__).resolve().parents[1]
-FOLDERS={'Travel':'travel','Street photography':'street','Weddings':'weddings','People':'people'}
+FOLDERS={'Travel':'travel','Street photography':'street','Weddings':'weddings','People':'people','Nature':'nature','Cars':'cars'}
 
 def capture_date(image):
     exif=image.getexif()
@@ -19,9 +19,10 @@ def capture_date(image):
 
 def import_photos(input_dir,output_dir):
     records=[]
+    folders={p.name.casefold():p for p in input_dir.iterdir() if p.is_dir()}
     for folder,category in FOLDERS.items():
         candidates=[]
-        for source in sorted((input_dir/folder).rglob('*')):
+        for source in sorted(folders.get(folder.casefold(),input_dir/folder).rglob('*')):
             if source.suffix.lower() not in {'.jpg','.jpeg','.png','.webp','.tif','.tiff'}:continue
             with Image.open(source) as image:
                 date=capture_date(image)
@@ -41,4 +42,7 @@ def import_photos(input_dir,output_dir):
 if __name__=='__main__':
     records=import_photos(ROOT/'Images',ROOT/'public'/'photos')
     (ROOT/'lib'/'gallery-originals.json').write_text(json.dumps(records,ensure_ascii=False,indent=2)+'\n')
+    retained={Path(r[key]).name for r in records for key in ('src','full')}
+    for asset in (ROOT/'public'/'photos').glob('*-*.webp'):
+        if asset.name.endswith(('-thumb.webp','-full.webp')) and asset.name not in retained: asset.unlink()
     print(f'Imported {len(records)} photographs. Photos without capture metadata remain undated.')
