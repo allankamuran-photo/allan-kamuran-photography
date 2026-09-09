@@ -48,3 +48,4 @@
 .work-tile>img{width:100%;height:auto;aspect-ratio:auto}
 .photo-button,.collection-card{background:transparent}
 .photo img,.photo-0 img,.photo-2 img,.photo-3 img,.collection-card>img,.social-grid img,.about-portrait{height:auto;aspect-ratio:auto}
+.photo-loop{background:var(--background);padding:24px 0 12px;overflow:hidden}.photo-loop .photo-loop-item{flex:0 0 220px;padding-left:14px}.photo-loop-item a{display:flex;align-items:center;justify-content:center;height:170px}.photo-loop-item img{display:block;width:100%;height:100%;object-fit:contain}.photo-loop-controls{display:flex;justify-content:center;align-items:center;gap:20px;font-size:11px;padding:14px 16px 0;color:var(--foreground)}.photo-loop-controls button{border:0;background:transparent;color:inherit;padding:8px}.photo-loop-controls button:hover{text-decoration:underline}@media(max-width:700px){.photo-loop .photo-loop-item{flex-basis:165px}.photo-loop-item a{height:130px}.photo-loop-controls{gap:12px}}
