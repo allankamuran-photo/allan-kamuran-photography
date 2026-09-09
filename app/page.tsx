@@ -4,7 +4,7 @@ import ProfilePortrait from '@/components/profile-portrait';
 import RotatingEarth from '@/components/ui/wireframe-dotted-globe';
 import {SiteNav} from '@/components/site-header';
 import {categories,categoryPhotos} from '@/lib/gallery';
-const photos=categories.map(category=>({...category,...categoryPhotos(category.slug)[0],category:category.name,title:category.description,image:categoryPhotos(category.slug)[0]?.src}));
+const photos=categories.map(category=>({...category,...categoryPhotos(category.slug)[category.slug==='weddings'?2:0],category:category.name,title:category.description,image:categoryPhotos(category.slug)[category.slug==='weddings'?2:0]?.src}));
 export default function Home(){
  return <>
  <main id="main-content"><section className="intro globe-intro"><RotatingEarth width={1800} height={1800} className="hero-globe-background"/><div className="folio-meta"><span>PHOTOGRAPHER & STORYTELLER</span><span>PORTFOLIO / VOL. 01</span></div><h1 className="name-title"><span className="name-first">Allan</span> <span className="name-last">Kamuran</span><sup>(AK)</sup></h1><SiteNav home/><div className="hero-stage"><p className="hero-note"><span aria-hidden="true">✦</span>WEDDINGS. STREET.<br/>TRAVEL. PEOPLE.</p><p className="hero-note"><span aria-hidden="true">✦</span>HOLDING ON TO<br/>HOW IT FELT.</p></div><div className="intro-bottom"><span>PHOTOGRAPHS BY ALLAN KAMURAN</span><a href="#work">SCROLL TO EXPLORE <ArrowDown size={16}/></a></div></section>
