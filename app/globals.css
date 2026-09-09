@@ -43,3 +43,8 @@
 .tile-animated>img{clip-path:none;transform:translateY(12px);opacity:0}
 .tile-animated.tile-visible[data-loaded=true]>img{clip-path:none;transform:none;opacity:1}
 .fullscreen-photo .viewer-image>img{object-fit:contain!important;object-position:center!important;transform:none!important;clip-path:none!important}
+/* Natural photo proportions without letterbox frames in the galleries. */
+.work-tile,.work-tile:nth-child(3n+2),.work-tile:nth-child(5n){aspect-ratio:auto;align-self:start;background:transparent}
+.work-tile>img{width:100%;height:auto;aspect-ratio:auto}
+.photo-button,.collection-card{background:transparent}
+.photo img,.photo-0 img,.photo-2 img,.photo-3 img,.collection-card>img,.social-grid img,.about-portrait{height:auto;aspect-ratio:auto}
