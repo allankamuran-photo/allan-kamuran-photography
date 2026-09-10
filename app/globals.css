@@ -42,7 +42,7 @@
 .work-tile,.photo-button,.collection-card{background:#0c0c0c}
 .work-tile:hover>img,.photo-button:hover img,.collection-card:hover>img{transform:none}
 .tile-animated>img{clip-path:none;transform:translateY(12px);opacity:0}
-.tile-animated.tile-visible[data-loaded=true]>img{clip-path:none;transform:none;opacity:1}
+.tile-animated.tile-visible>img{clip-path:none;transform:none;opacity:1}
 .fullscreen-photo .viewer-image>img{object-fit:contain!important;object-position:center!important;transform:none!important;clip-path:none!important}
 /* Natural photo proportions without letterbox frames in the galleries. */
 .work-tile,.work-tile:nth-child(3n+2),.work-tile:nth-child(5n){aspect-ratio:auto;align-self:start;background:transparent}

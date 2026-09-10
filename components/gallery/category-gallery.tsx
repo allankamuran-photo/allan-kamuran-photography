@@ -13,7 +13,11 @@ export function CategoryGallery({category,photos}:{category:{slug:string;name:st
    const root=grid.current;if(!root)return;
    const tiles=root.querySelectorAll<HTMLElement>('.work-tile');
    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-   tiles.forEach(t=>t.classList.add('tile-animated'));
+   tiles.forEach(tile=>{
+     const image=tile.querySelector<HTMLImageElement>('img');
+     if(image?.complete)tile.dataset[image.naturalWidth?'loaded':'failed']='true';
+     tile.classList.add('tile-animated');
+   });
    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('tile-visible');observer.unobserve(entry.target)}}),{threshold:.05});
    const start=()=>tiles.forEach(t=>observer.observe(t));
    const phases=new MutationObserver(()=>{if(document.documentElement.dataset.motionPhase==='idle'){start();phases.disconnect();}});
