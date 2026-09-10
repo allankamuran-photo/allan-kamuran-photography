@@ -20,6 +20,9 @@ export function Motion() {
 
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const introKey='ak-intro-shown';
+    if(sessionStorage.getItem(introKey))return;
+    sessionStorage.setItem(introKey,'true');
     changePhase('intro');
     const start = performance.now();
     let frame = 0;
