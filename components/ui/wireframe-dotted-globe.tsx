@@ -5,6 +5,9 @@ import * as d3 from 'd3';
 
 interface RotatingEarthProps { width?: number; height?: number; className?: string }
 
+let cachedLand: d3.ExtendedFeatureCollection | null = null;
+let cachedDots: [number, number][] = [];
+
 export default function RotatingEarth({ width = 800, height = 600, className = '' }: RotatingEarthProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pausedRef = useRef(false);
@@ -108,7 +111,8 @@ export default function RotatingEarth({ width = 800, height = 600, className = '
       return false
     }
 
-    fetch('/data/land.json', { signal: controller.signal }).then(response => {
+    if(cachedLand){land=cachedLand;dots.push(...cachedDots);render();}
+    else fetch('/data/land.json', { signal: controller.signal }).then(response => {
       if (!response.ok) throw new Error('Map unavailable');
       return response.json() as Promise<d3.ExtendedFeatureCollection>;
     }).then(data => {
@@ -119,6 +123,7 @@ export default function RotatingEarth({ width = 800, height = 600, className = '
           if (data.features.some((feature: Parameters<typeof pointInFeature>[1]) => pointInFeature([lng, lat], feature))) dots.push([lng, lat]);
         }
       }
+      cachedLand=data;cachedDots=[...dots];
       render();
     }).catch(() => { /* Keep the wireframe visible if the map is unavailable. */ });
     let previousTime = 0;
