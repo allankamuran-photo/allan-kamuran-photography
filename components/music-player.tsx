@@ -1,11 +1,12 @@
 'use client';
-import {useRef,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {Volume2,VolumeX} from 'lucide-react';
 import tracksData from '@/lib/music.json';
 const tracks=tracksData as {src:string;title:string}[];
 export function MusicPlayer(){
  const audio=useRef<HTMLAudioElement>(null);
  const [playing,setPlaying]=useState(false);const [index,setIndex]=useState(0);const [error,setError]=useState('');
+ useEffect(()=>{if(audio.current)audio.current.volume=.5;},[]);
  const play=async()=>{if(!audio.current)return;try{await audio.current.play();setError('');}catch{setPlaying(false);setError('Music could not play. Try again.');}};
  const toggle=()=>{if(playing)audio.current?.pause();else void play();};
  const next=()=>{const nextIndex=(index+1)%tracks.length;setIndex(nextIndex);if(audio.current){audio.current.src=tracks[nextIndex].src;void play();}};
