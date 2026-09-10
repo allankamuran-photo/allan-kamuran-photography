@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import {ArrowUpRight} from 'lucide-react';
 
 type Phase = 'idle' | 'intro' | 'intro-out' | 'cover' | 'uncover';
 export function Motion() {
@@ -122,7 +123,7 @@ export function Motion() {
       <div className="intro-signature">AK<span>✦</span></div>
       <div className="intro-scene"><p>Always looking<br/>a little closer.</p><div className="intro-art"><div className="loading-monogram" aria-label="Allan Kamuran">AK<span aria-hidden="true">✦</span></div></div><p>Life, as<br/>it unfolds.</p></div>
       <div className="intro-status" aria-hidden="true">Loading… <span>{progress}%</span></div>
-      <button className="skip-intro" onClick={()=>{if(finishTimer.current)clearTimeout(finishTimer.current);changePhase('idle');}}>Skip intro ↗</button>
+      <button className="skip-intro" onClick={()=>{if(finishTimer.current)clearTimeout(finishTimer.current);changePhase('idle');}}>Skip intro <ArrowUpRight aria-hidden="true"/></button>
     </div>}
     {(phase==='cover'||phase==='uncover')&&<div className={`page-curtain ${phase==='uncover'?'curtain-exit':''}`} aria-hidden="true"><div className="curtain-title"><em>{destination.slice(0,1)}</em>{destination.slice(1)}</div><span className="curtain-status">Loading — <em>{progress}%</em></span></div>}
     <div className="motion-cursor" ref={cursor} aria-hidden="true"><span className="cursor-dot"/><span className="cursor-view">View ↗</span><span className="cursor-loading">Loading — <em>{progress}%</em></span></div>
